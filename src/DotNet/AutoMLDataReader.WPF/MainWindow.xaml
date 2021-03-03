@@ -1,0 +1,76 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AutoMLDataReader.WPF"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors" x:Class="AutoMLDataReader.WPF.MainWindow"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" DataContext="{Binding MainView, Mode=OneWay, Source={StaticResource ViewModelLocator}}">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="139"/>
+            <RowDefinition/>
+            <RowDefinition Height="21.04"/>
+        </Grid.RowDefinitions>
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="121*"/>
+                <ColumnDefinition Width="132*"/>
+                <ColumnDefinition Width="547*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="38.139"/>
+                <RowDefinition Height="37.978"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <DataGrid DataContext="{Binding ResultTable, Mode=OneWay}" ItemsSource="{Binding Mode=OneWay}" Grid.RowSpan="2" Grid.ColumnSpan="2" Grid.Row="1" Grid.Column="1" IsReadOnly="True"/>
+
+            <Button Content="GO" IsEnabled="{Binding IsNotBusy, Mode=OneWay}">
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="Click">
+                        <b:CallMethodAction TargetObject="{Binding Mode=OneWay}" MethodName="Load"/>
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
+            </Button>
+            <Slider x:Name="slider" Grid.Column="2" VerticalAlignment="Center" AutoToolTipPlacement="TopLeft" Maximum="500" Minimum="10" SmallChange="10" LargeChange="50" TickPlacement="BottomRight" Value="{Binding BatchSize, Mode=TwoWay, UpdateSourceTrigger=Default}" TickFrequency="10"/>
+            <TextBlock Grid.Column="1" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding Value, ElementName=slider, Mode=OneWay, StringFormat=BatchSize \{0\}}" Margin="59,0,0,0"/>
+            <Button Content="Export CSV" Grid.Row="1">
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="Click">
+                        <b:CallMethodAction MethodName="ExportToCSV" TargetObject="{Binding Mode=OneWay}"/>
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
+            </Button>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="157*"/>
+                <ColumnDefinition Width="643*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Button x:Name="btnBrowse" Content="..." Click="btnBrowse_Click" Grid.Column="1" Width="30" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding CSVPath}" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Column="1" Margin="0,0,30,0"/>
+            <TextBox Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="1" Text="{Binding EndpointUrl, Mode=TwoWay, UpdateSourceTrigger=Default}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            <TextBlock HorizontalAlignment="Center" Grid.Row="1" Text="Endpoint Url" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            <TextBox Grid.Column="1" HorizontalAlignment="Stretch" Grid.Row="2" Text="{Binding APIKey, Mode=TwoWay, UpdateSourceTrigger=Default}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            <TextBlock HorizontalAlignment="Center" Grid.Row="2" Text="API Key" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            <TextBlock HorizontalAlignment="Center" Text="CSV Path" TextWrapping="Wrap" VerticalAlignment="Center"/>
+        </Grid>
+        <StatusBar VerticalAlignment="Stretch" Grid.Row="2">
+            <StatusBarItem VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Content="{Binding StatusText}" Width="100"/>
+            <StatusBarItem HorizontalContentAlignment="Stretch">
+                <ProgressBar Height="15" Maximum="1" Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" Value="{Binding LoadProgress}"/>
+            </StatusBarItem>
+        </StatusBar>
+
+    </Grid>
+</Window>
