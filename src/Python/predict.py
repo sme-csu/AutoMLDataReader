@@ -8,7 +8,7 @@ import requests
 # Get the predict result of Azure model
 
 
-def predict(data_csv):
+def predict(data_csv, scoring_uri, key):
     data_list = data_csv.values.tolist()
     data = {'data': data_list}
 
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     data_csv = pd.read_csv(file_input)
 
     # Get the predict result
-    result = predict(data_csv)
+    result = predict(data_csv, scoring_uri, key)
 
     # Save the result into csv file
     file_output = './data/output.csv'
